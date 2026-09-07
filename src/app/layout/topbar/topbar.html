@@ -1,0 +1,38 @@
+<header class="flex h-16 items-center justify-between border-b bg-white px-6" style="border-color: var(--lf-border)">
+  <div>
+    <h1 class="text-lg font-semibold">
+      {{ pageTitle }}
+    </h1>
+  </div>
+
+  <div class="flex items-center gap-2">
+
+    <!-- Notifications -->
+    <button mat-icon-button aria-label="Notifications" matTooltip="Notifications">
+      <mat-icon>notifications</mat-icon>
+    </button>
+
+    <!-- User menu -->
+    <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>person</mat-icon>
+        <span>Profile</span>
+      </button>
+
+      <button mat-menu-item>
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
+      </button>
+
+      <button mat-menu-item>
+        <mat-icon>logout</mat-icon>
+        <span>Sign out</span>
+      </button>
+    </mat-menu>
+
+  </div>
+</header>
