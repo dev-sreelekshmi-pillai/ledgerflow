@@ -1,0 +1,191 @@
+<div class="space-y-6">
+
+  <div class="flex items-start justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold text-slate-900">
+        Credit Cards
+      </h1>
+
+      <p class="mt-1 text-sm text-slate-500">
+        Track card balances, available credit, and utilization.
+      </p>
+    </div>
+
+    <button mat-flat-button type="button" (click)="openAddCreditCard()">
+      <mat-icon>add</mat-icon>
+      Add Credit Card
+    </button>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-3">
+
+    <div class="rounded-xl border border-slate-200 bg-white p-5">
+      <p class="text-sm text-slate-500">
+        Total Credit Limit
+      </p>
+
+      <p class="lf-financial-number mt-2 text-2xl font-semibold text-slate-900">
+        ₹{{ totalLimit().toLocaleString('en-IN') }}
+      </p>
+    </div>
+
+    <div class="rounded-xl border border-slate-200 bg-white p-5">
+      <p class="text-sm text-slate-500">
+        Outstanding
+      </p>
+
+      <p class="lf-financial-number lf-expense mt-2 text-2xl font-semibold">
+        ₹{{ totalOutstanding().toLocaleString('en-IN') }}
+      </p>
+    </div>
+
+    <div class="rounded-xl border border-slate-200 bg-white p-5">
+      <p class="text-sm text-slate-500">
+        Available Credit
+      </p>
+
+      <p class="lf-financial-number lf-income mt-2 text-2xl font-semibold">
+        ₹{{ totalAvailable().toLocaleString('en-IN') }}
+      </p>
+    </div>
+
+  </div>
+
+  @if (cardsWithAccounts().length === 0) {
+
+  <div class="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center">
+    <mat-icon class="text-4xl text-slate-400">
+      credit_card
+    </mat-icon>
+
+    <h2 class="mt-3 text-lg font-medium text-slate-900">
+      No credit cards yet
+    </h2>
+
+    <p class="mt-1 text-sm text-slate-500">
+      Add your first credit card to start tracking spending.
+    </p>
+
+    <button mat-flat-button class="mt-5" type="button" (click)="openAddCreditCard()">
+      Add Credit Card
+    </button>
+  </div>
+
+  } @else {
+
+  <div class="grid gap-5 lg:grid-cols-2">
+
+    @for (
+    item of cardsWithAccounts();
+    track item.card.id
+    ) {
+
+    <div class="rounded-xl border border-slate-200 bg-white p-6">
+
+      <div class="flex items-start justify-between">
+        <div>
+          <div class="flex items-center gap-2">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+              <mat-icon>credit_card</mat-icon>
+            </div>
+
+            <div>
+              <h2 class="font-semibold text-slate-900">
+                {{ item.card.name }}
+              </h2>
+
+              <p class="text-xs text-slate-500">
+                Billing day {{ item.card.billingDay }}
+                · Due day {{ item.card.dueDay }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+          {{ item.utilization | number:'1.0-1' }}%
+        </span>
+      </div>
+
+      <div class="mt-6 grid grid-cols-2 gap-4">
+
+        <div>
+          <p class="text-xs text-slate-500">
+            Credit Limit
+          </p>
+
+          <p class="lf-financial-number mt-1 font-semibold text-slate-900">
+            ₹{{ item.card.creditLimit.toLocaleString('en-IN') }}
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs text-slate-500">
+            Outstanding
+          </p>
+
+          <p class="lf-financial-number lf-expense mt-1 font-semibold">
+            ₹{{ item.outstanding.toLocaleString('en-IN') }}
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs text-slate-500">
+            Available
+          </p>
+
+          <p class="lf-financial-number lf-income mt-1 font-semibold">
+            ₹{{ item.available.toLocaleString('en-IN') }}
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs text-slate-500">
+            Utilization
+          </p>
+
+          <p class="lf-financial-number mt-1 font-semibold text-slate-900">
+            {{ item.utilization | number:'1.0-1' }}%
+          </p>
+        </div>
+
+      </div>
+
+      <div class="mt-5">
+        <div class="mb-2 flex justify-between text-xs text-slate-500">
+          <span>Credit utilization</span>
+          <span>
+            {{ item.utilization | number:'1.0-1' }}%
+          </span>
+        </div>
+
+        <div class="h-2 overflow-hidden rounded-full bg-slate-100">
+          <div class="h-full rounded-full bg-blue-600" [style.width.%]="
+                  Math.min(item.utilization, 100)
+                "></div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex gap-3 border-t border-slate-100 pt-5">
+
+        <button mat-flat-button type="button" (click)="openPurchaseCreditCard(item.card.id)">
+          <mat-icon>shopping_cart</mat-icon>
+          Purchase
+        </button>
+
+      <button mat-stroked-button type="button" (click)="openPayCreditCard(item.card.id)">
+        <mat-icon>payments</mat-icon>
+        Pay Card
+      </button>
+
+      </div>
+
+    </div>
+
+    }
+
+  </div>
+
+  }
+
+</div>

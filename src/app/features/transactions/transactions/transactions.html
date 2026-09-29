@@ -1,0 +1,154 @@
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold text-[var(--lf-text-primary)]">
+        Transactions
+      </h1>
+
+      <p class="mt-1 text-sm text-[var(--lf-text-secondary)]">
+        Track where your money comes from and where it goes.
+      </p>
+    </div>
+
+    <button mat-flat-button type="button" (click)="openAddTransaction()">
+      <mat-icon>add</mat-icon>
+      Add Transaction
+    </button>
+  </div>
+
+  <!-- Summary -->
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+
+    <div class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] p-5">
+      <p class="text-sm text-[var(--lf-text-secondary)]">
+        Total Income
+      </p>
+
+      <p class="lf-financial-number mt-2 text-2xl font-semibold lf-income">
+        ₹{{ transactionStore.totalIncome() | number }}
+      </p>
+    </div>
+
+    <div class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] p-5">
+      <p class="text-sm text-[var(--lf-text-secondary)]">
+        Total Expenses
+      </p>
+
+      <p class="lf-financial-number mt-2 text-2xl font-semibold lf-expense">
+        ₹{{ transactionStore.totalExpenses() | number }}
+      </p>
+    </div>
+
+    <div class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] p-5">
+      <p class="text-sm text-[var(--lf-text-secondary)]">
+        Net Cash Flow
+      </p>
+
+      <p class="lf-financial-number mt-2 text-2xl font-semibold" [class.lf-income]="transactionStore.netCashFlow() >= 0"
+        [class.lf-expense]="transactionStore.netCashFlow() < 0">
+        ₹{{ transactionStore.netCashFlow() | number }}
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Transactions -->
+  <div class="overflow-hidden rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)]">
+
+    <div class="border-b border-[var(--lf-border)] px-5 py-4">
+      <h2 class="font-semibold text-[var(--lf-text-primary)]">
+        Recent Transactions
+      </h2>
+    </div>
+
+    @if (transactionStore.transactions().length === 0) {
+
+    <div class="flex flex-col items-center justify-center px-6 py-16 text-center">
+
+      <mat-icon class="mb-3 text-4xl text-[var(--lf-text-muted)]">
+        receipt_long
+      </mat-icon>
+
+      <h3 class="text-base font-medium text-[var(--lf-text-primary)]">
+        No transactions yet
+      </h3>
+
+      <p class="mt-1 max-w-md text-sm text-[var(--lf-text-secondary)]">
+        Add your first transaction to start tracking your money.
+      </p>
+
+    </div>
+
+    } @else {
+
+    <div class="overflow-x-auto">
+
+      <table class="w-full text-left text-sm">
+
+        <thead class="border-b border-[var(--lf-border)] bg-[var(--lf-surface-muted)]">
+          <tr>
+            <th class="px-5 py-3 font-medium">Date</th>
+            <th class="px-5 py-3 font-medium">Description</th>
+            <th class="px-5 py-3 font-medium">Type</th>
+            <th>Category</th>
+            <th class="px-5 py-3 text-right font-medium">Amount</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (
+          transaction of transactionStore.transactions();
+          track transaction.id
+          ) {
+
+          <tr class="border-b border-[var(--lf-border)] last:border-b-0">
+
+            <td class="px-5 py-4">
+              {{ transaction.transactionDate }}
+            </td>
+
+            <td class="px-5 py-4 font-medium">
+              {{ transaction.description }}
+            </td>
+
+            <td class="px-5 py-4 capitalize">
+              {{ transaction.type.replace('-', ' ') }}
+            </td>
+          <td>
+            @if (getCategory(transaction.categoryId); as category) {
+            <div class="flex items-center gap-2">
+              <span class="flex h-7 w-7 items-center justify-center rounded-full" [style.background-color]="category.color + '20'"
+                [style.color]="category.color">
+                <mat-icon>{{ category.icon }}</mat-icon>
+              </span>
+
+              <span>{{ category.name }}</span>
+            </div>
+            } @else {
+            <span class="text-[var(--lf-text-muted)]">
+              Uncategorized
+            </span>
+            }
+          </td>
+            <td class="lf-financial-number px-5 py-4 text-right font-medium">
+              ₹{{ transaction.amount | number }}
+            </td>
+
+          </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    }
+
+  </div>
+
+</div>

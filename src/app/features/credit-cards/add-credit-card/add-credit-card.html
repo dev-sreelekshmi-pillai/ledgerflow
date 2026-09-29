@@ -1,0 +1,105 @@
+<div class="w-full max-w-md p-6">
+  <div class="mb-6">
+    <h2 class="text-xl font-semibold text-slate-900">
+      Add Credit Card
+    </h2>
+
+    <p class="mt-1 text-sm text-slate-500">
+      Add a credit card and its billing details.
+    </p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="save()" class="space-y-4">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Card name</mat-label>
+
+      <input matInput formControlName="name" placeholder="e.g. HDFC Millennia" />
+
+      @if (form.controls.name.hasError('required')) {
+      <mat-error>
+        Card name is required.
+      </mat-error>
+      }
+
+      @if (form.controls.name.hasError('maxlength')) {
+      <mat-error>
+        Card name is too long.
+      </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Credit limit</mat-label>
+
+      <input matInput type="number" min="1" formControlName="creditLimit" />
+
+      <span matTextPrefix>₹&nbsp;</span>
+
+      @if (form.controls.creditLimit.hasError('required')) {
+      <mat-error>
+        Credit limit is required.
+      </mat-error>
+      }
+
+      @if (form.controls.creditLimit.hasError('min')) {
+      <mat-error>
+        Credit limit must be greater than zero.
+      </mat-error>
+      }
+    </mat-form-field>
+
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Billing day</mat-label>
+
+        <input matInput type="number" min="1" max="31" formControlName="billingDay" />
+
+        <mat-hint>1–31</mat-hint>
+
+        @if (
+        form.controls.billingDay.hasError('required') ||
+        form.controls.billingDay.hasError('min') ||
+        form.controls.billingDay.hasError('max')
+        ) {
+        <mat-error>
+          Enter a day from 1 to 31.
+        </mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Due day</mat-label>
+
+        <input matInput type="number" min="1" max="31" formControlName="dueDay" />
+
+        <mat-hint>1–31</mat-hint>
+
+        @if (
+        form.controls.dueDay.hasError('required') ||
+        form.controls.dueDay.hasError('min') ||
+        form.controls.dueDay.hasError('max')
+        ) {
+        <mat-error>
+          Enter a day from 1 to 31.
+        </mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    @if (errorMessage) {
+    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      {{ errorMessage }}
+    </div>
+    }
+
+    <div class="flex justify-end gap-3 pt-4">
+      <button mat-button type="button" [disabled]="isSaving" (click)="cancel()">
+        Cancel
+      </button>
+
+      <button mat-flat-button type="submit" [disabled]="isSaving">
+        {{ isSaving ? 'Saving...' : 'Add Credit Card' }}
+      </button>
+    </div>
+  </form>
+</div>

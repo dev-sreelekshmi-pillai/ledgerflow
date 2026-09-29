@@ -1,0 +1,96 @@
+<div class="space-y-6">
+
+  <div class="flex items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold text-[var(--lf-text-primary)]">
+        Parties
+      </h1>
+
+      <p class="mt-1 text-sm text-[var(--lf-text-secondary)]">
+        People and organizations connected to your financial activity.
+      </p>
+    </div>
+
+    <button mat-flat-button color="primary" type="button" (click)="openAddParty()">
+      <mat-icon>person_add</mat-icon>
+      Add Party
+    </button>
+  </div>
+
+  @if (partyStore.activeParties().length === 0) {
+  <div class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)]
+             bg-[var(--lf-surface)] p-10 text-center">
+    <mat-icon class="text-4xl text-[var(--lf-text-muted)]">
+      groups
+    </mat-icon>
+
+    <h2 class="mt-4 text-lg font-medium">
+      No parties yet
+    </h2>
+
+    <p class="mt-2 text-sm text-[var(--lf-text-secondary)]">
+      Add people or organizations you exchange money with.
+    </p>
+  </div>
+  }
+
+  @else {
+  <div class="overflow-hidden rounded-[var(--lf-radius-lg)]
+             border border-[var(--lf-border)]
+             bg-[var(--lf-surface)]">
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="border-b border-[var(--lf-border)]
+                   bg-[var(--lf-surface-muted)]">
+          <tr>
+            <th class="px-6 py-4 text-left font-medium">
+              Name
+            </th>
+
+            <th class="px-6 py-4 text-left font-medium">
+              Type
+            </th>
+
+            <th class="px-6 py-4 text-left font-medium">
+              Contact
+            </th>
+
+            <th class="px-6 py-4 text-right font-medium">
+              Actions
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (
+          party of partyStore.activeParties();
+          track party.id
+          ) {
+          <tr class="border-b border-[var(--lf-border)]
+                       last:border-b-0">
+            <td class="px-6 py-4 font-medium">
+              {{ party.name }}
+            </td>
+
+            <td class="px-6 py-4 text-[var(--lf-text-secondary)]">
+              {{ party.type }}
+            </td>
+
+            <td class="px-6 py-4 text-[var(--lf-text-secondary)]">
+              {{ party.phone || party.email || '—' }}
+            </td>
+
+            <td class="px-6 py-4 text-right">
+              <button mat-icon-button type="button" aria-label="Deactivate party" (click)="deactivateParty(party.id)">
+                <mat-icon>archive</mat-icon>
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  }
+
+</div>

@@ -1,0 +1,66 @@
+<h2 mat-dialog-title>
+  Add Category
+</h2>
+
+<mat-dialog-content>
+
+  <form [formGroup]="form" class="space-y-5 pt-2">
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Category Name</mat-label>
+
+      <input matInput formControlName="name" placeholder="e.g. Food" />
+
+      @if (
+      form.controls.name.invalid &&
+      form.controls.name.touched
+      ) {
+      <mat-error>
+        Category name is required.
+      </mat-error>
+      }
+    </mat-form-field>
+
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Icon</mat-label>
+
+      <input matInput formControlName="icon" placeholder="e.g. restaurant" />
+
+      <mat-hint>
+        Use a Material icon name.
+      </mat-hint>
+
+      @if (
+      form.controls.icon.invalid &&
+      form.controls.icon.touched
+      ) {
+      <mat-error>
+        Icon is required.
+      </mat-error>
+      }
+    </mat-form-field>
+
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Color</mat-label>
+
+      <input matInput type="color" formControlName="color" />
+    </mat-form-field>
+
+  </form>
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+
+  <button mat-button type="button" (click)="cancel()">
+    Cancel
+  </button>
+
+  <button mat-flat-button type="button" (click)="save()" [disabled]="form.invalid">
+    Save Category
+  </button>
+
+</mat-dialog-actions>

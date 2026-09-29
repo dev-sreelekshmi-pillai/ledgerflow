@@ -1,13 +1,176 @@
-<section>
-  <p class="text-sm text-[var(--lf-text-secondary)]">
-    Analytics
-  </p>
+<div class="space-y-6">
 
-  <h1 class="mt-1 text-2xl font-semibold">
-    Reports
-  </h1>
+  <!-- Header -->
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
-  <p class="mt-2 text-[var(--lf-text-secondary)]">
-    Your reports will appear here.
-  </p>
-</section>
+    <div>
+      <h1 class="text-2xl font-semibold">
+        Reports
+      </h1>
+
+      <p class="mt-1 text-sm text-[var(--lf-text-secondary)]">
+        Understand where your money went.
+      </p>
+    </div>
+
+    <mat-button-toggle-group [value]="selectedPeriod()" (change)="setPeriod($event.value)" aria-label="Report period">
+      <mat-button-toggle value="this-month">
+        This Month
+      </mat-button-toggle>
+
+      <mat-button-toggle value="last-month">
+        Last Month
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+
+  </div>
+
+  <!-- Period -->
+  <div>
+    <p class="text-sm font-medium text-[var(--lf-text-secondary)]">
+      {{ periodLabel() }}
+    </p>
+
+    <p class="text-xs text-[var(--lf-text-muted)]">
+      {{ selectedMonth() }}
+    </p>
+  </div>
+
+  <!-- Summary -->
+  <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
+    <div class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] p-5 shadow-sm">
+      <p class="text-sm text-[var(--lf-text-secondary)]">
+        Income
+      </p>
+
+      <p class="lf-financial-number lf-income mt-2 text-2xl font-semibold">
+        ₹{{ income() | number:'1.2-2' }}
+      </p>
+    </div>
+
+    <div class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] p-5 shadow-sm">
+      <p class="text-sm text-[var(--lf-text-secondary)]">
+        Expenses
+      </p>
+
+      <p class="lf-financial-number lf-expense mt-2 text-2xl font-semibold">
+        ₹{{ expenses() | number:'1.2-2' }}
+      </p>
+    </div>
+
+    <div class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] p-5 shadow-sm">
+      <p class="text-sm text-[var(--lf-text-secondary)]">
+        Net Cash Flow
+      </p>
+
+      <p class="lf-financial-number mt-2 text-2xl font-semibold" [class.lf-income]="netCashFlow() >= 0"
+        [class.lf-expense]="netCashFlow() < 0">
+        ₹{{ netCashFlow() | number:'1.2-2' }}
+      </p>
+    </div>
+
+    <div class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] p-5 shadow-sm">
+      <p class="text-sm text-[var(--lf-text-secondary)]">
+        Transactions
+      </p>
+
+      <p class="lf-financial-number mt-2 text-2xl font-semibold">
+        {{ transactionCount() }}
+      </p>
+    </div>
+
+  </section>
+
+  <!-- Expense Breakdown -->
+  <section class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] shadow-sm">
+
+    <div class="border-b border-[var(--lf-border)] px-5 py-4">
+      <h2 class="font-semibold">
+        Expense Breakdown
+      </h2>
+
+      <p class="text-sm text-[var(--lf-text-secondary)]">
+        Spending by category
+      </p>
+    </div>
+
+    <div class="p-5">
+
+      @for (item of expenseByCategory(); track item.categoryId) {
+
+      <div class="mb-5 last:mb-0">
+
+        <div class="mb-2 flex items-center justify-between">
+          <span class="text-sm font-medium">
+            Category {{ item.categoryId }}
+          </span>
+
+          <div class="text-right">
+            <span class="lf-financial-number text-sm font-semibold">
+              ₹{{ item.amount | number:'1.2-2' }}
+            </span>
+
+            <span class="ml-2 text-xs text-[var(--lf-text-secondary)]">
+              {{ getPercentage(item.amount) | number:'1.0-0' }}%
+            </span>
+          </div>
+        </div>
+
+        <div class="h-2 overflow-hidden rounded-full bg-slate-100">
+          <div class="h-full rounded-full bg-[var(--lf-primary)]" [style.width.%]="getPercentage(item.amount)"></div>
+        </div>
+
+      </div>
+
+      } @empty {
+
+      <div class="py-10 text-center">
+        <mat-icon class="text-4xl text-[var(--lf-text-muted)]">
+          bar_chart
+        </mat-icon>
+
+        <p class="mt-3 text-sm text-[var(--lf-text-secondary)]">
+          No expenses for this period.
+        </p>
+      </div>
+
+      }
+
+    </div>
+  </section>
+
+  <!-- Largest Expense -->
+  @if (largestExpense(); as transaction) {
+
+  <section class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] p-5 shadow-sm">
+
+    <div class="flex items-center gap-3">
+
+      <div class="flex h-10 w-10 items-center justify-center rounded-full bg-red-50">
+        <mat-icon class="lf-expense">
+          payments
+        </mat-icon>
+      </div>
+
+      <div>
+        <p class="text-sm text-[var(--lf-text-secondary)]">
+          Largest Expense
+        </p>
+
+        <p class="font-semibold">
+          {{ transaction.description }}
+        </p>
+      </div>
+
+      <p class="lf-financial-number lf-expense ml-auto text-lg font-semibold">
+        ₹{{ transaction.amount | number:'1.2-2' }}
+      </p>
+
+    </div>
+
+  </section>
+
+  }
+
+</div>

@@ -7,7 +7,7 @@ import { Topbar } from '../topbar/topbar';
   selector: 'app-shell',
   imports: [RouterOutlet, Sidebar,Topbar],
   templateUrl: './shell.html',
-  styleUrl: './shell.scss',
+  styleUrl: './shell.css',
 })
 export class Shell {
 

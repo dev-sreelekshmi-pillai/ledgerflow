@@ -1,13 +1,221 @@
-<section>
-  <p class="text-sm text-[var(--lf-text-secondary)]">
-    Finance
-  </p>
+<div class="space-y-6">
 
-  <h1 class="mt-1 text-2xl font-semibold">
-    Accounts
-  </h1>
+  <!-- Page Header -->
+  <div class="flex items-center justify-between gap-4">
 
-  <p class="mt-2 text-[var(--lf-text-secondary)]">
-    Your accounts will appear here.
-  </p>
-</section>
+    <div>
+      <h1 class="text-2xl font-semibold text-[var(--lf-text-primary)]">
+        Accounts
+      </h1>
+
+      <p class="mt-1 text-sm text-[var(--lf-text-secondary)]">
+        Manage the places where your money and financial balances live.
+      </p>
+    </div>
+
+    <button class="mt-5" mat-flat-button type="button" (click)="openAccountForm()">
+      <mat-icon>add</mat-icon>
+      Add Account
+    </button>
+
+  </div>
+
+
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
+  <!-- Total Accounts -->
+
+  <div class="rounded-[var(--lf-radius-lg)]
+           border border-[var(--lf-border)]
+           bg-[var(--lf-surface)]
+           p-5">
+    <p class="text-sm text-[var(--lf-text-secondary)]">
+      Total Accounts
+    </p>
+
+    <p class="mt-2 text-2xl font-semibold
+             text-[var(--lf-text-primary)]
+             lf-financial-number">
+      {{ accountStore.accountCount() }}
+    </p>
+  </div>
+
+
+  <!-- Total Assets -->
+
+  <div class="rounded-[var(--lf-radius-lg)]
+           border border-[var(--lf-border)]
+           bg-[var(--lf-surface)]
+           p-5">
+    <p class="text-sm text-[var(--lf-text-secondary)]">
+      Total Assets
+    </p>
+
+    <p class="mt-2 text-2xl font-semibold
+             lf-financial-number">
+      {{ accountStore.totalAssetBalance() | number }}
+    </p>
+  </div>
+
+
+  <!-- Total Liabilities -->
+
+  <div class="rounded-[var(--lf-radius-lg)]
+           border border-[var(--lf-border)]
+           bg-[var(--lf-surface)]
+           p-5">
+    <p class="text-sm text-[var(--lf-text-secondary)]">
+      Total Liabilities
+    </p>
+
+    <p class="mt-2 text-2xl font-semibold
+             lf-financial-number">
+      {{ accountStore.totalLiabilityBalance() | number }}
+    </p>
+  </div>
+
+
+  <!-- Net Worth -->
+
+  <div class="rounded-[var(--lf-radius-lg)]
+           border border-[var(--lf-border)]
+           bg-[var(--lf-surface)]
+           p-5">
+    <p class="text-sm text-[var(--lf-text-secondary)]">
+      Net Worth
+    </p>
+
+    <p class="mt-2 text-2xl font-semibold
+             lf-financial-number">
+      {{ accountStore.netWorth() | number }}
+    </p>
+  </div>
+
+</div>
+
+
+  <!-- Accounts -->
+  @if (accountStore.accounts().length > 0) {
+
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+
+    @for (account of accountStore.accounts(); track account.id) {
+
+    <div class="rounded-[var(--lf-radius-lg)]
+                 border border-[var(--lf-border)]
+                 bg-[var(--lf-surface)]
+                 p-5">
+
+      <div class="flex items-start justify-between gap-4">
+
+        <div class="flex items-center gap-3">
+
+          <div class="flex h-10 w-10 items-center justify-center rounded-[var(--lf-radius-md)] bg-[var(--lf-surface-muted)]">
+            <mat-icon>
+              {{
+              account.type === 'bank'
+              ? 'account_balance'
+              : account.type === 'cash'
+              ? 'payments'
+              : account.type === 'credit-card'
+              ? 'credit_card'
+              : account.type === 'investment'
+              ? 'trending_up'
+              : 'account_balance_wallet'
+              }}
+            </mat-icon>
+          </div>
+
+          <div>
+            <h2 class="font-medium text-[var(--lf-text-primary)]">
+              {{ account.name }}
+            </h2>
+
+          <div class="flex items-center gap-2">
+
+          </div>
+          <p class="text-sm text-[var(--lf-text-secondary)]">
+            {{ getAccountTypeLabel(account.type) }}
+          </p>
+
+            @if (!account.isActive) {
+            <span class="rounded-full bg-[var(--lf-surface-muted)]
+                       px-2 py-0.5 text-xs
+                       text-[var(--lf-text-muted)]">
+              Inactive
+            </span>
+            }
+
+
+          </div>
+
+        </div>
+
+        <button mat-icon-button type="button" aria-label="Edit account" (click)="openEditAccountForm(account)">
+          <mat-icon>edit</mat-icon>
+        </button>
+<button mat-icon-button type="button" aria-label="Deactivate account" [disabled]="!account.isActive"
+  (click)="deactivateAccount(account)">
+  <mat-icon>
+    block
+  </mat-icon>
+</button>
+      </div>
+
+
+      <div class="mt-6">
+
+        <p class="text-sm
+                     text-[var(--lf-text-secondary)]">
+          Current Balance
+        </p>
+
+        <p class="mt-1 text-2xl font-semibold
+                     text-[var(--lf-text-primary)]
+                     lf-financial-number">
+          {{ account.currentBalance | number }}
+          {{ account.currency }}
+        </p>
+
+      </div>
+
+    </div>
+
+    }
+
+  </div>
+
+  } @else {
+
+  <!-- Empty State -->
+
+  <div class="rounded-[var(--lf-radius-lg)]
+             border border-dashed border-[var(--lf-border)]
+             bg-[var(--lf-surface)]
+             px-6 py-12 text-center">
+
+    <mat-icon class="!h-12 !w-12 !text-5xl">
+      account_balance
+    </mat-icon>
+
+    <h2 class="mt-4 text-lg font-semibold
+               text-[var(--lf-text-primary)]">
+      No accounts yet
+    </h2>
+
+    <p class="mx-auto mt-2 max-w-md text-sm
+               text-[var(--lf-text-secondary)]">
+      Add your first bank account, cash wallet, credit card,
+      investment account, or loan.
+    </p>
+
+    <button class="mt-5" mat-flat-button type="button">
+      <mat-icon>add</mat-icon>
+      Add Account
+    </button>
+
+  </div>
+
+  }
+
+</div>

@@ -1,0 +1,80 @@
+<h2 mat-dialog-title>
+  Add Budget
+</h2>
+
+<mat-dialog-content>
+
+  <form [formGroup]="form" class="space-y-4 pt-2">
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Category</mat-label>
+
+      <mat-select formControlName="categoryId">
+
+        @for (category of categories(); track category.id) {
+        @if (category.isActive) {
+        <mat-option [value]="category.id">
+          {{ category.name }}
+        </mat-option>
+        }
+        }
+
+      </mat-select>
+
+      @if (
+      form.controls.categoryId.invalid &&
+      form.controls.categoryId.touched
+      ) {
+      @if (form.controls.categoryId.hasError('duplicateBudget')) {
+      <mat-error>
+        A budget already exists for this category and month.
+      </mat-error>
+      } @else {
+      <mat-error>
+        Category is required.
+      </mat-error>
+      }
+      }
+
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Monthly Budget</mat-label>
+
+      <input matInput type="number" min="0.01" step="0.01" formControlName="amount" />
+
+      <span matTextPrefix>₹&nbsp;</span>
+
+      @if (
+      form.controls.amount.invalid &&
+      form.controls.amount.touched
+      ) {
+      <mat-error>
+        Enter a budget greater than ₹0.
+      </mat-error>
+      }
+
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Month</mat-label>
+
+      <input matInput type="month" formControlName="month" />
+
+    </mat-form-field>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+
+  <button mat-button type="button" (click)="cancel()">
+    Cancel
+  </button>
+
+  <button mat-flat-button color="primary" type="button" (click)="save()">
+    Save Budget
+  </button>
+
+</mat-dialog-actions>

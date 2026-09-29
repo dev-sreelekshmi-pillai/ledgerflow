@@ -1,0 +1,247 @@
+<h2 mat-dialog-title>
+  Add Transaction
+</h2>
+
+<mat-dialog-content>
+
+  <form [formGroup]="form" class="space-y-5 pt-2">
+
+    <!-- Transaction Type -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Transaction Type</mat-label>
+
+      <mat-select formControlName="type" (selectionChange)="onTypeChange()">
+        @for (type of transactionTypes; track type.value) {
+        <mat-option [value]="type.value">
+          {{ type.label }}
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+
+    <!-- Amount -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Amount</mat-label>
+
+      <input matInput type="number" min="0.01" step="0.01" formControlName="amount" />
+
+      <span matTextPrefix>₹&nbsp;</span>
+
+      @if (
+      form.controls.amount.hasError('min') &&
+      form.controls.amount.touched
+      ) {
+      <mat-error>
+        Amount must be greater than zero.
+      </mat-error>
+      }
+    </mat-form-field>
+
+
+    <!-- Date -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Date</mat-label>
+
+      <input matInput type="date" formControlName="transactionDate" />
+    </mat-form-field>
+
+
+    <!-- Description -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Description</mat-label>
+
+      <input matInput formControlName="description" placeholder="e.g. Salary, Groceries" />
+
+      @if (
+      form.controls.description.invalid &&
+      form.controls.description.touched
+      ) {
+      <mat-error>
+        Description is required.
+      </mat-error>
+      }
+    </mat-form-field>
+
+
+    <!-- Expense -->
+    @if (isExpense) {
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Account</mat-label>
+
+      <mat-select formControlName="sourceAccountId">
+        @for (
+        account of accounts();
+        track account.id
+        ) {
+        @if (account.isActive) {
+        <mat-option [value]="account.id">
+          {{ account.name }}
+        </mat-option>
+        }
+        }
+      </mat-select>
+
+      @if (
+      form.controls.sourceAccountId.invalid &&
+      form.controls.sourceAccountId.touched
+      ) {
+      <mat-error>
+        Account is required.
+      </mat-error>
+      }
+    </mat-form-field>
+
+    }
+
+
+    <!-- Income -->
+    @if (isIncome) {
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Deposit Into</mat-label>
+
+      <mat-select formControlName="destinationAccountId">
+        @for (
+        account of accounts();
+        track account.id
+        ) {
+        @if (account.isActive) {
+        <mat-option [value]="account.id">
+          {{ account.name }}
+        </mat-option>
+        }
+        }
+      </mat-select>
+    </mat-form-field>
+
+    }
+
+
+    <!-- Transfer -->
+    @if (isTransfer) {
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>From Account</mat-label>
+
+      <mat-select formControlName="sourceAccountId">
+        @for (
+        account of accounts();
+        track account.id
+        ) {
+        @if (account.isActive) {
+        <mat-option [value]="account.id">
+          {{ account.name }}
+        </mat-option>
+        }
+        }
+      </mat-select>
+
+      @if (
+      form.controls.sourceAccountId.invalid &&
+      form.controls.sourceAccountId.touched
+      ) {
+      <mat-error>
+        Source account is required.
+      </mat-error>
+      }
+    </mat-form-field>
+
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>To Account</mat-label>
+
+      <mat-select formControlName="destinationAccountId">
+        @for (
+        account of accounts();
+        track account.id
+        ) {
+        @if (account.isActive) {
+        <mat-option [value]="account.id">
+          {{ account.name }}
+        </mat-option>
+        }
+        }
+      </mat-select>
+
+      @if (
+      form.controls.destinationAccountId.hasError(
+      'required'
+      ) &&
+      form.controls.destinationAccountId.touched
+      ) {
+      <mat-error>
+        Destination account is required.
+      </mat-error>
+      }
+
+      @if (
+      form.controls.destinationAccountId.hasError(
+      'sameAccount'
+      )
+      ) {
+      <mat-error>
+        Source and destination accounts must be different.
+      </mat-error>
+      }
+    </mat-form-field>
+
+    }
+
+
+    <!-- Category -->
+    @if (isExpense) {
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Category</mat-label>
+
+      <mat-select formControlName="categoryId">
+        @for (
+        category of categories();
+        track category.id
+        ) {
+        @if (category.isActive) {
+        <mat-option [value]="category.id">
+          {{ category.name }}
+        </mat-option>
+        }
+        }
+      </mat-select>
+
+      @if (
+      form.controls.categoryId.invalid &&
+      form.controls.categoryId.touched
+      ) {
+      <mat-error>
+        Category is required.
+      </mat-error>
+      }
+    </mat-form-field>
+
+    }
+
+
+    <!-- Notes -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Notes</mat-label>
+
+      <textarea matInput rows="3" formControlName="notes" placeholder="Optional notes"></textarea>
+    </mat-form-field>
+
+  </form>
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+
+  <button mat-button type="button" (click)="cancel()">
+    Cancel
+  </button>
+
+  <button mat-flat-button type="button" (click)="save()" [disabled]="form.invalid">
+    Save Transaction
+  </button>
+
+</mat-dialog-actions>

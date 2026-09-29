@@ -1,0 +1,135 @@
+<h2 mat-dialog-title>
+  Add Investment
+</h2>
+
+<mat-dialog-content>
+
+  <form [formGroup]="form" class="space-y-4 pt-2">
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Investment Name</mat-label>
+
+      <input matInput formControlName="name" placeholder="e.g. Nippon India Growth Mid Cap" />
+
+      @if (
+      form.controls.name.invalid &&
+      form.controls.name.touched
+      ) {
+      <mat-error>
+        Investment name is required.
+      </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Investment Type</mat-label>
+
+      <mat-select formControlName="type">
+
+        <mat-option value="mutual-fund">
+          Mutual Fund
+        </mat-option>
+
+        <mat-option value="stock">
+          Stock
+        </mat-option>
+
+        <mat-option value="etf">
+          ETF
+        </mat-option>
+
+        <mat-option value="gold">
+          Gold
+        </mat-option>
+
+        <mat-option value="fixed-deposit">
+          Fixed Deposit
+        </mat-option>
+
+        <mat-option value="other">
+          Other
+        </mat-option>
+
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Investment Account</mat-label>
+
+      <mat-select formControlName="accountId">
+
+        @for (account of accounts(); track account.id) {
+        @if (account.isActive) {
+        <mat-option [value]="account.id">
+          {{ account.name }}
+        </mat-option>
+        }
+        }
+
+      </mat-select>
+
+      @if (
+      form.controls.accountId.invalid &&
+      form.controls.accountId.touched
+      ) {
+      <mat-error>
+        Investment account is required.
+      </mat-error>
+      }
+    </mat-form-field>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Invested Amount</mat-label>
+
+        <input matInput type="number" min="0.01" step="0.01" formControlName="investedAmount" />
+
+        <span matTextPrefix>₹&nbsp;</span>
+
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Current Value</mat-label>
+
+        <input matInput type="number" min="0" step="0.01" formControlName="currentValue" />
+
+        <span matTextPrefix>₹&nbsp;</span>
+
+      </mat-form-field>
+
+    </div>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Units</mat-label>
+
+      <input matInput type="number" min="0" step="0.000001" formControlName="units" placeholder="Optional" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Purchase Date</mat-label>
+
+      <input matInput type="date" formControlName="purchaseDate" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Notes</mat-label>
+
+      <textarea matInput rows="3" formControlName="notes"></textarea>
+    </mat-form-field>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+
+  <button mat-button type="button" (click)="cancel()">
+    Cancel
+  </button>
+
+  <button mat-flat-button color="primary" type="button" (click)="save()">
+    Save Investment
+  </button>
+
+</mat-dialog-actions>

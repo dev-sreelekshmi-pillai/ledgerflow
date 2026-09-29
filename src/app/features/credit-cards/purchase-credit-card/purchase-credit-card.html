@@ -1,0 +1,110 @@
+<div class="p-6">
+  <div class="mb-6">
+    <h2 class="text-xl font-semibold text-[var(--lf-text-primary)]">
+      Record Credit Card Purchase
+    </h2>
+
+    @if (creditCard) {
+    <p class="mt-1 text-sm text-[var(--lf-text-secondary)]">
+      {{ creditCard.name }}
+    </p>
+    }
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="save()" class="space-y-4">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Amount</mat-label>
+
+      <span matTextPrefix>₹&nbsp;</span>
+
+      <input matInput type="number" formControlName="amount" min="0.01" step="0.01" />
+
+      @if (
+      form.controls.amount.hasError('required') ||
+      form.controls.amount.hasError('min')
+      ) {
+      <mat-error>
+        Enter a valid amount.
+      </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Category</mat-label>
+
+      <mat-select formControlName="categoryId">
+        @for (category of categories(); track category.id) {
+        <mat-option [value]="category.id">
+          {{ category.name }}
+        </mat-option>
+        }
+      </mat-select>
+
+      @if (
+      form.controls.categoryId.hasError('required')
+      ) {
+      <mat-error>
+        Category is required.
+      </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Party / Merchant</mat-label>
+
+      <mat-select formControlName="partyId">
+        <mat-option value="">
+          None
+        </mat-option>
+
+        @for (party of parties(); track party.id) {
+        <mat-option [value]="party.id">
+          {{ party.name }}
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Date</mat-label>
+
+      <input matInput type="date" formControlName="transactionDate" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Description</mat-label>
+
+      <input matInput formControlName="description" maxlength="200" placeholder="e.g. Groceries at Lulu" />
+
+      @if (
+      form.controls.description.hasError('required')
+      ) {
+      <mat-error>
+        Description is required.
+      </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Notes</mat-label>
+
+      <textarea matInput formControlName="notes" rows="3" maxlength="500"></textarea>
+    </mat-form-field>
+
+    @if (errorMessage) {
+    <div class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+      {{ errorMessage }}
+    </div>
+    }
+
+    <div class="flex justify-end gap-3 pt-2">
+      <button mat-button type="button" (click)="cancel()" [disabled]="saving">
+        Cancel
+      </button>
+
+      <button mat-flat-button type="submit" [disabled]="saving">
+        {{ saving ? 'Saving...' : 'Record Purchase' }}
+      </button>
+    </div>
+  </form>
+</div>

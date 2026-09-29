@@ -1,10 +1,31 @@
 import { Routes } from '@angular/router';
 
+import { authGuard } from './core/auth/auth.guard';
+
 export const routes: Routes = [
   {
-    path: '',
+    path: 'login',
     loadComponent: () =>
-      import('./layout/shell/shell').then((m) => m.Shell),
+      import('./features/auth/login/login').then(
+        (m) => m.Login
+      ),
+  },
+
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./features/auth/register/register').then(
+        (m) => m.Register
+      ),
+  },
+
+  {
+    path: '',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./layout/shell/shell').then(
+        (m) => m.Shell
+      ),
 
     children: [
       {
@@ -32,7 +53,7 @@ export const routes: Routes = [
       {
         path: 'transactions',
         loadComponent: () =>
-          import('./features/transactions/transactions').then(
+          import('./features/transactions/transactions/transactions').then(
             (m) => m.Transactions
           ),
       },
@@ -76,7 +97,24 @@ export const routes: Routes = [
             (m) => m.Debts
           ),
       },
-
+      {
+        path: 'parties',
+        loadComponent: () =>
+          import(
+            './features/parties/parties/parties'
+          ).then(
+            (m) => m.Parties
+          ),
+      },
+      {
+        path: 'credit-cards',
+        loadComponent: () =>
+          import(
+            './features/credit-cards/credit-cards/credit-cards'
+          ).then(
+            (m) => m.CreditCards
+          ),
+      },
       {
         path: 'settings',
         loadComponent: () =>

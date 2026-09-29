@@ -1,13 +1,179 @@
-<section>
-  <p class="text-sm text-[var(--lf-text-secondary)]">
-    Liabilities
-  </p>
+<div class="space-y-6">
 
-  <h1 class="mt-1 text-2xl font-semibold">
-    Debts
-  </h1>
+  <div class="flex items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold text-[var(--lf-text-primary)]">
+        Debts
+      </h1>
 
-  <p class="mt-2 text-[var(--lf-text-secondary)]">
-    Your debts will appear here.
-  </p>
-</section>
+      <p class="mt-1 text-sm text-[var(--lf-text-secondary)]">
+        Track money you have lent or borrowed.
+      </p>
+    </div>
+
+    <button mat-flat-button color="primary" type="button" (click)="openAddDebt()">
+      <mat-icon>add</mat-icon>
+      Add Debt
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+
+    <div class="rounded-[var(--lf-radius-lg)] border
+             border-[var(--lf-border)]
+             bg-[var(--lf-surface)] p-5">
+      <p class="text-sm text-[var(--lf-text-secondary)]">
+        You are owed
+      </p>
+
+      <p class="mt-2 text-2xl font-semibold lf-financial-number">
+        ₹{{ debtStore.totalLent().toFixed(2) }}
+      </p>
+    </div>
+
+    <div class="rounded-[var(--lf-radius-lg)] border
+             border-[var(--lf-border)]
+             bg-[var(--lf-surface)] p-5">
+      <p class="text-sm text-[var(--lf-text-secondary)]">
+        You owe
+      </p>
+
+      <p class="mt-2 text-2xl font-semibold lf-financial-number">
+        ₹{{ debtStore.totalBorrowed().toFixed(2) }}
+      </p>
+    </div>
+
+    <div class="rounded-[var(--lf-radius-lg)] border
+             border-[var(--lf-border)]
+             bg-[var(--lf-surface)] p-5">
+      <p class="text-sm text-[var(--lf-text-secondary)]">
+        Active debts
+      </p>
+
+      <p class="mt-2 text-2xl font-semibold lf-financial-number">
+        {{ debtStore.activeDebtCount() }}
+      </p>
+    </div>
+
+  </div>
+
+  @if (debtStore.activeDebts().length === 0) {
+
+  <div class="rounded-[var(--lf-radius-lg)] border
+             border-[var(--lf-border)]
+             bg-[var(--lf-surface)] p-10 text-center">
+    <mat-icon class="text-4xl text-[var(--lf-text-muted)]">
+      payments
+    </mat-icon>
+
+    <h2 class="mt-4 text-lg font-medium">
+      No active debts
+    </h2>
+
+    <p class="mt-2 text-sm text-[var(--lf-text-secondary)]">
+      Add a debt to start tracking money lent or borrowed.
+    </p>
+  </div>
+
+  } @else {
+
+  <div class="overflow-hidden rounded-[var(--lf-radius-lg)]
+             border border-[var(--lf-border)]
+             bg-[var(--lf-surface)]">
+
+    <div class="overflow-x-auto">
+
+      <table class="min-w-full text-sm">
+
+        <thead class="border-b border-[var(--lf-border)]
+                   bg-[var(--lf-surface-muted)]">
+          <tr>
+
+            <th class="px-6 py-4 text-left font-medium">
+              Party
+            </th>
+
+            <th class="px-6 py-4 text-left font-medium">
+              Type
+            </th>
+
+            <th class="px-6 py-4 text-right font-medium">
+              Principal
+            </th>
+
+            <th class="px-6 py-4 text-right font-medium">
+              Outstanding
+            </th>
+
+            <th class="px-6 py-4 text-left font-medium">
+              Status
+            </th>
+<th class="px-6 py-4 text-right font-medium">
+  Actions
+</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (
+          debt of debtStore.activeDebts();
+          track debt.id
+          ) {
+
+          <tr class="border-b border-[var(--lf-border)]
+                       last:border-b-0">
+
+            <td class="px-6 py-4 font-medium">
+              {{ getPartyName(debt.partyId) }}
+            </td>
+
+            <td class="px-6 py-4">
+
+              @if (debt.direction === 'lent') {
+              <span class="lf-income">
+                Money Lent
+              </span>
+              } @else {
+              <span class="lf-expense">
+                Money Borrowed
+              </span>
+              }
+
+            </td>
+
+            <td class="px-6 py-4 text-right lf-financial-number">
+              ₹{{ debt.principalAmount.toFixed(2) }}
+            </td>
+
+            <td class="px-6 py-4 text-right font-medium lf-financial-number">
+              ₹{{ debt.outstandingAmount.toFixed(2) }}
+            </td>
+
+            <td class="px-6 py-4">
+              <span class="rounded-full bg-[var(--lf-surface-muted)]
+                           px-2.5 py-1 text-xs font-medium">
+                {{ debt.status }}
+              </span>
+            </td>
+<td class="px-6 py-4 text-right">
+  <button mat-flat-button type="button" (click)="openRepayment(debt)">
+    <mat-icon>payments</mat-icon>
+    Repay
+  </button>
+</td>
+          </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  }
+
+</div>

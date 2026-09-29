@@ -6,6 +6,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDividerModule } from '@angular/material/divider';
+
+
+import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-topbar',
@@ -14,12 +18,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatButtonModule,
     MatMenuModule,
     MatTooltipModule,
+    MatDividerModule
   ],
   templateUrl: './topbar.html',
   styleUrl: './topbar.css',
 })
 export class Topbar {
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
 
   pageTitle = 'Dashboard';
 
@@ -54,5 +60,10 @@ export class Topbar {
     };
 
     return titles[route] ?? 'Dashboard';
+  }
+
+  async logout(): Promise<void> {
+    await this.authService.logout();
+    await this.router.navigate(['/login']);
   }
 }

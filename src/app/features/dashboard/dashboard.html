@@ -1,13 +1,312 @@
-<section>
-  <p class="mb-1 text-sm text-[var(--lf-text-secondary)]">
-    Overview
-  </p>
+<div class="space-y-6">
 
-  <h2 class="text-2xl font-semibold">
-    Financial Dashboard
-  </h2>
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl font-semibold text-[var(--lf-text-primary)]">
+      Dashboard
+    </h1>
 
-  <p class="mt-2 text-[var(--lf-text-secondary)]">
-    Your financial overview will appear here.
-  </p>
-</section>
+    <p class="mt-1 text-sm text-[var(--lf-text-secondary)]">
+      Your financial overview
+    </p>
+  </div>
+
+  <!-- Financial Summary -->
+  <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
+    <!-- Total Assets -->
+    <div class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] p-5 shadow-sm">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-[var(--lf-text-secondary)]">
+            Total Assets
+          </p>
+
+          <p class="lf-financial-number mt-2 text-2xl font-semibold">
+            ₹{{ totalAssets() | number:'1.2-2' }}
+          </p>
+        </div>
+
+        <mat-icon class="text-slate-500">
+          account_balance
+        </mat-icon>
+      </div>
+    </div>
+
+    <!-- Income -->
+    <div class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] p-5 shadow-sm">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-[var(--lf-text-secondary)]">
+            Income
+          </p>
+
+          <p class="lf-financial-number lf-income mt-2 text-2xl font-semibold">
+            ₹{{ transactionStore.totalIncome() | number:'1.2-2' }}
+          </p>
+        </div>
+
+        <mat-icon class="lf-income">
+          trending_up
+        </mat-icon>
+      </div>
+    </div>
+
+    <!-- Expenses -->
+    <div class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] p-5 shadow-sm">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-[var(--lf-text-secondary)]">
+            Expenses
+          </p>
+
+          <p class="lf-financial-number lf-expense mt-2 text-2xl font-semibold">
+            ₹{{ transactionStore.totalExpenses() | number:'1.2-2' }}
+          </p>
+        </div>
+
+        <mat-icon class="lf-expense">
+          trending_down
+        </mat-icon>
+      </div>
+    </div>
+
+    <!-- Net Cash Flow -->
+    <div class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] p-5 shadow-sm">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-[var(--lf-text-secondary)]">
+            Net Cash Flow
+          </p>
+
+          <p class="lf-financial-number mt-2 text-2xl font-semibold"
+            [class.lf-income]="transactionStore.netCashFlow() >= 0"
+            [class.lf-expense]="transactionStore.netCashFlow() < 0">
+            ₹{{ transactionStore.netCashFlow() | number:'1.2-2' }}
+          </p>
+        </div>
+
+        <mat-icon>
+          account_balance_wallet
+        </mat-icon>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Accounts + Recent Transactions -->
+  <section class="grid grid-cols-1 gap-6 xl:grid-cols-2">
+
+    <!-- Accounts -->
+    <div class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] shadow-sm">
+
+      <div class="flex items-center justify-between border-b border-[var(--lf-border)] px-5 py-4">
+        <div>
+          <h2 class="font-semibold">
+            Accounts
+          </h2>
+
+          <p class="text-sm text-[var(--lf-text-secondary)]">
+            Current balances
+          </p>
+        </div>
+
+        <span class="text-sm text-[var(--lf-text-muted)]">
+          {{ activeAccounts().length }}
+        </span>
+      </div>
+
+      <div class="divide-y divide-[var(--lf-border)]">
+
+        @for (account of activeAccounts(); track account.id) {
+        <div class="flex items-center justify-between px-5 py-4">
+
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100">
+              <mat-icon>
+                @switch (account.type) {
+                @case ('bank') {
+                account_balance
+                }
+                @case ('cash') {
+                payments
+                }
+                @case ('credit-card') {
+                credit_card
+                }
+                @case ('investment') {
+                trending_up
+                }
+                @case ('loan') {
+                request_quote
+                }
+                @default {
+                account_balance_wallet
+                }
+                }
+              </mat-icon>
+            </div>
+
+            <div>
+              <p class="font-medium">
+                {{ account.name }}
+              </p>
+
+              <p class="text-xs capitalize text-[var(--lf-text-secondary)]">
+                {{ account.type }}
+              </p>
+            </div>
+          </div>
+
+          <p class="lf-financial-number font-semibold">
+            ₹{{ account.currentBalance | number:'1.2-2' }}
+          </p>
+
+        </div>
+        } @empty {
+        <div class="px-5 py-8 text-center text-sm text-[var(--lf-text-secondary)]">
+          No active accounts.
+        </div>
+        }
+
+      </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] shadow-sm">
+
+      <div class="border-b border-[var(--lf-border)] px-5 py-4">
+        <h2 class="font-semibold">
+          Recent Transactions
+        </h2>
+
+        <p class="text-sm text-[var(--lf-text-secondary)]">
+          Latest money movements
+        </p>
+      </div>
+
+      <div class="divide-y divide-[var(--lf-border)]">
+
+        @for (transaction of recentTransactions(); track transaction.id) {
+        <div class="flex items-center justify-between gap-4 px-5 py-4">
+
+          <div class="min-w-0">
+            <p class="truncate font-medium">
+              {{ transaction.description }}
+            </p>
+
+            <div class="mt-1 flex items-center gap-2 text-xs text-[var(--lf-text-secondary)]">
+              <span>
+                {{ getTransactionLabel(transaction.type) }}
+              </span>
+
+              <span>•</span>
+
+              <span>
+                {{ transaction.transactionDate }}
+              </span>
+            </div>
+          </div>
+
+          <p class="lf-financial-number shrink-0 font-semibold" [class]="getTransactionClass(transaction.type)">
+            @if (transaction.type === 'income') {
+            +
+            } @else if (transaction.type === 'expense') {
+            -
+            }
+
+            ₹{{ transaction.amount | number:'1.2-2' }}
+          </p>
+
+        </div>
+        } @empty {
+        <div class="px-5 py-8 text-center text-sm text-[var(--lf-text-secondary)]">
+          No transactions yet.
+        </div>
+        }
+
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Expense Breakdown -->
+  <section class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] shadow-sm">
+
+    <div class="border-b border-[var(--lf-border)] px-5 py-4">
+      <h2 class="font-semibold">
+        Expense Breakdown
+      </h2>
+
+      <p class="text-sm text-[var(--lf-text-secondary)]">
+        Spending by category
+      </p>
+    </div>
+
+    <div class="p-5">
+
+      @for (item of expenseByCategory(); track item.categoryId) {
+      <div class="mb-4 last:mb-0">
+
+        <div class="mb-2 flex items-center justify-between">
+
+          <div class="flex items-center gap-2">
+            <mat-icon class="text-[var(--lf-text-secondary)]">
+              {{ item.icon }}
+            </mat-icon>
+
+            <span class="text-sm font-medium">
+              {{ item.categoryName }}
+            </span>
+          </div>
+
+          <span class="lf-financial-number text-sm font-semibold">
+            ₹{{ item.amount | number:'1.2-2' }}
+          </span>
+
+        </div>
+
+        <div class="h-2 overflow-hidden rounded-full bg-slate-100">
+          <div class="h-full rounded-full" [style.width.%]="
+                transactionStore.totalExpenses() > 0
+                  ? (item.amount / transactionStore.totalExpenses()) * 100
+                  : 0
+              " [style.background-color]="item.color"></div>
+        </div>
+
+      </div>
+      } @empty {
+      <div class="py-8 text-center text-sm text-[var(--lf-text-secondary)]">
+        No categorized expenses yet.
+      </div>
+      }
+
+    </div>
+  </section>
+
+  <section class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] shadow-sm">
+
+    <div class="border-b border-[var(--lf-border)] px-5 py-4">
+      <h2 class="font-semibold">
+        Expense Distribution
+      </h2>
+
+      <p class="text-sm text-[var(--lf-text-secondary)]">
+        Where your money is going
+      </p>
+    </div>
+
+    <div class="p-5">
+      @if (expenseByCategory().length > 0) {
+      <apx-chart [series]="expenseChart().series" [chart]="expenseChart().chart" [labels]="expenseChart().labels"
+        [colors]="expenseChart().colors" [legend]="expenseChart().legend" [dataLabels]="expenseChart().dataLabels"
+        [tooltip]="expenseChart().tooltip" [responsive]="expenseChart().responsive"></apx-chart>
+      } @else {
+      <div class="flex min-h-80 items-center justify-center text-sm text-[var(--lf-text-secondary)]">
+        No categorized expenses yet.
+      </div>
+      }
+    </div>
+
+  </section>
+</div>

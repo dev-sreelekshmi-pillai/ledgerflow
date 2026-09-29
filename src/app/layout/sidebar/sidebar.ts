@@ -30,14 +30,14 @@ export class Sidebar {
       icon: 'account_balance',
     },
     {
+      label: 'Credit Cards',
+      icon: 'credit_card',
+      route: '/credit-cards',
+    },
+    {
       label: 'Transactions',
       route: '/transactions',
       icon: 'receipt_long',
-    },
-    {
-      label: 'Budgets',
-      route: '/budgets',
-      icon: 'account_balance_wallet',
     },
     {
       label: 'Categories',
@@ -45,19 +45,30 @@ export class Sidebar {
       icon: 'category',
     },
     {
-      label: 'Reports',
-      route: '/reports',
-      icon: 'bar_chart',
+      label: 'Budgets',
+      route: '/budgets',
+      icon: 'account_balance_wallet',
     },
     {
       label: 'Investments',
       route: '/investments',
       icon: 'trending_up',
-    },
-    {
+    }, {
       label: 'Debts',
       route: '/debts',
       icon: 'payments',
+    }, {
+      label: 'Parties',
+      route: '/parties',
+      icon: 'people',
     },
+    {
+      label: 'Reports',
+      route: '/reports',
+      icon: 'bar_chart',
+    },
+
+
+
   ];
 }

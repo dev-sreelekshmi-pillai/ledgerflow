@@ -41,3 +41,13 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+
+# Security / secrets
+serviceAccount.json
+*.pem
+.env
+.environments
+.environment.development.ts
+.env.*
+!.env.example

@@ -1,13 +1,118 @@
-<section>
-  <p class="text-sm text-[var(--lf-text-secondary)]">
-    Configuration
-  </p>
+<div class="space-y-6">
 
-  <h1 class="mt-1 text-2xl font-semibold">
-    Categories
-  </h1>
+  <!-- Header -->
+  <div class="flex items-center justify-between">
 
-  <p class="mt-2 text-[var(--lf-text-secondary)]">
-    Your categories will appear here.
-  </p>
-</section>
+    <div>
+      <h1 class="text-2xl font-semibold text-[var(--lf-text-primary)]">
+        Categories
+      </h1>
+
+      <p class="mt-1 text-sm text-[var(--lf-text-secondary)]">
+        Organize your income and expenses.
+      </p>
+    </div>
+
+    <button mat-flat-button type="button" (click)="openAddCategory()">
+      <mat-icon>add</mat-icon>
+      Add Category
+    </button>
+
+  </div>
+
+
+  <!-- Category count -->
+  <div class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)] p-5">
+
+    <p class="text-sm text-[var(--lf-text-secondary)]">
+      Active Categories
+    </p>
+
+    <p class="mt-2 text-2xl font-semibold text-[var(--lf-text-primary)]">
+      {{ categoryStore.categoryCount() }}
+    </p>
+
+  </div>
+
+
+  <!-- Categories -->
+  <div class="rounded-[var(--lf-radius-lg)] border border-[var(--lf-border)] bg-[var(--lf-surface)]">
+
+    <div class="border-b border-[var(--lf-border)] px-5 py-4">
+      <h2 class="font-semibold text-[var(--lf-text-primary)]">
+        Your Categories
+      </h2>
+    </div>
+
+
+    @if (categoryStore.categories().length === 0) {
+
+    <div class="flex flex-col items-center justify-center px-6 py-16 text-center">
+
+      <mat-icon class="mb-3 text-4xl text-[var(--lf-text-muted)]">
+        category
+      </mat-icon>
+
+      <h3 class="text-base font-medium text-[var(--lf-text-primary)]">
+        No categories yet
+      </h3>
+
+      <p class="mt-1 max-w-md text-sm text-[var(--lf-text-secondary)]">
+        Create categories such as Food, Transport, Bills, and Shopping.
+      </p>
+
+    </div>
+
+    } @else {
+
+    <div class="divide-y divide-[var(--lf-border)]">
+
+      @for (
+      category of categoryStore.categories();
+      track category.id
+      ) {
+
+      @if (category.isActive) {
+
+      <div class="flex items-center justify-between px-5 py-4">
+
+        <div class="flex items-center gap-3">
+
+          <div class="flex h-10 w-10 items-center justify-center rounded-full"
+            [style.background-color]="category.color">
+            <mat-icon class="text-white">
+              {{ category.icon }}
+            </mat-icon>
+          </div>
+
+          <div>
+            <p class="font-medium text-[var(--lf-text-primary)]">
+              {{ category.name }}
+            </p>
+
+            <p class="text-xs text-[var(--lf-text-secondary)]">
+              Active
+            </p>
+          </div>
+
+        </div>
+
+        <button mat-icon-button type="button" aria-label="Category actions">
+          <mat-icon>
+            more_vert
+          </mat-icon>
+        </button>
+
+      </div>
+
+      }
+
+      }
+
+    </div>
+
+    }
+
+  </div>
+
+</div>
